@@ -3,16 +3,36 @@ $myGray: rgb(166, 166, 166);
 body {
     margin: 0;
 }
-.container {
+.topRow {
     background-color: $myTeal;
     margin: 0;
     width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 .form-group {
     background-color: $myGray;
-    width: 50%;
     margin: auto;
 }
 #header {
     color: white;
+    font-size: 45px;
+}
+#holeOptions {
+    display: flex;
+    flex-direction: row;
+    background-color: none;
+    width: 17%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: auto;
+}
+.holeOptionClass {
+    margin-top: 5px;
+    background-color: $myTeal;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
 }

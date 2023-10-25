@@ -17,14 +17,13 @@ async function getGolfCourseDetails(golfCourseId) {
       return await response.json();
     });
   }
-
-//function for when the selection changes
-  function onCourseChange() {
-    let x = 0;
-  }
-
+//all definitions
   let courses = '';
+  let allOfDetails = '';
   let teeBoxes = '';
+  let holes = '';
+  let holeChoices = [{id: 1, name: "9 Holes"}, {id: 2, name: "18 Holes"}]
+  let holeAmount;
 //makes the selection work
   async function go() {
     courses = await getAvailableGolfCourses(); 
@@ -37,30 +36,55 @@ async function getGolfCourseDetails(golfCourseId) {
     }
   
 go();
+
 async function goAgain() {
-  teeBoxes = await getGolfCourseDetails(golfCourseId);
-  console.log(teeBoxes)
+  allOfDetails = await getGolfCourseDetails(selectedCourse.id);
+  holes = allOfDetails.holes
+  holeOptions()
+  }
+function noClue() {
+  holes.length = holeAmount;
+  for (let i = 0; i < holeAmount; i++) {
+    teeBoxes = holes[i].teeBoxes
+  let teeBoxSelectHtml = ''
+    teeBoxes.forEach(function (teeBox, index) {
+    teeBoxSelectHtml += `<option value="${index}">${teeBox.teeType.toUpperCase()}, ${
+    teeBox.yards
+    } yards</option>`
+    document.getElementById('tee-box-select').innerHTML = teeBoxSelectHtml;
+  })}
 }
-goAgain();
+
 let selectedCourse = '';
   //finding the selected course 
 function submitCourseSelect() {
    let x = document.getElementById('course-select').selectedIndex
    selectedCourse = courses[x]
+   goAgain();
    render();
+}
+function holeOptions() {
+  let holeChoicesHTML = '';
+  holeChoices.forEach((choice) => {
+    holeChoicesHTML += `<div class="holeOptionClass" onclick="holeNumberSelection(${choice.id})">${choice.name}</div>`
+  })
+  document.getElementById('holeOptions').innerHTML = holeChoicesHTML;
+}
+function holeNumberSelection(id) {
+  if (id === 1) {
+    holeAmount = 9;
+  } else if (id === 2) {
+    holeAmount = 18;
+  } else {
+    console.log('idk what went wrong, oopsies')
+  }
+  document.getElementById('holeOptions').innerHTML = '';
+  noClue()
 }
 function render() {
   //rendering in the title
   let courseTitle = '';
   courseTitle += `<div>${selectedCourse.name}</div>`
   document.getElementById('header').innerHTML = courseTitle
-  //render in the table with information saved in it's own array and stuff
-//   let teeBoxSelectHtml = ''
-// teeBoxes.forEach(function (teeBox, index) {
-//    teeBoxSelectHtml += `<option value="${index}">${teeBox.teeType.toUpperCase()}, ${
-//      teeBox.totalYards
-//    } yards</option>`
-// });
-
-// document.getElementById('tee-box-select').innerHTML = teeBoxSelectHtml;
-}
+  //render in the table with information saved in it's own array and stuf
+}//i don't really understand *how* the table is supposed to be created
