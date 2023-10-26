@@ -32,10 +32,28 @@ body {
   margin: auto;
 }
 
-.holeOptionClass {
+.holeOptionClass, .playerOptionClass, .teeBoxOptionClass {
   margin-top: 5px;
   background-color: rgb(0, 64, 64);
   color: white;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+#playerOptions {
+  display: flex;
+  flex-direction: row;
+  background-color: none;
+  width: 30%;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: auto;
+}
+
+.chosenOptionClass {
+  margin-top: 5px;
+  background-color: rgb(49, 76, 76);
+  color: rgb(166, 166, 166);
   padding: 15px;
   border-radius: 10px;
 }/*# sourceMappingURL=style.css.map */

@@ -1,5 +1,6 @@
 $myTeal: rgb(0, 64, 64);
 $myGray: rgb(166, 166, 166);
+$myOffTeal: rgb(49, 76, 76);
 body {
     margin: 0;
 }
@@ -29,10 +30,27 @@ body {
     flex-wrap: wrap;
     margin: auto;
 }
-.holeOptionClass {
+.holeOptionClass, .playerOptionClass, .teeBoxOptionClass {
     margin-top: 5px;
     background-color: $myTeal;
     color: white;
+    padding: 15px;
+    border-radius: 10px;
+}
+#playerOptions {
+    display: flex;
+    flex-direction: row;
+    background-color: none;
+    width: 30%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: auto;
+}
+
+.chosenOptionClass {
+    margin-top: 5px;
+    background-color: $myOffTeal;
+    color: $myGray;
     padding: 15px;
     border-radius: 10px;
 }
