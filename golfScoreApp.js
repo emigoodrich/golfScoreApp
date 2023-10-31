@@ -27,7 +27,13 @@ async function getGolfCourseDetails(golfCourseId) {
   let playerAmount;
   let holeAmount;
   let selectedTee;
-  let rowOne = ["Holes"];
+  let parArray = ['Par']
+  let yardageArray = ['Yardage']
+  let rowOne = ["Hole"];
+  let handicapArray = ['Handicap']
+  let totalYards = 0;
+  let totalPar = 0;
+
 //makes the selection work
   async function go() {
     courses = await getAvailableGolfCourses(); 
@@ -56,6 +62,7 @@ function submitCourseSelect() {
    if (holeAmount) {
     //everything equals nothing??? or local storage ughhh
    }
+   document.getElementsByClassName('form-group').innerHTML = ''
    goAgain();
    render();
 }
@@ -80,7 +87,8 @@ function holeNumberSelection(id) {
   for(let i=1; i < holeAmount; i++) {
     rowOne[i] = i
   }
-  console.log(rowOne)
+  
+  document.getElementsByClassName('holeOptionClass').className = null;
  document.getElementById(`holeOption${id}`).className = 'chosenOptionClass'
  playerOptions()
 }
@@ -102,30 +110,61 @@ function playerAmountSelection(id) {
 //which tee button
 function noClue() {
   holes.length = holeAmount;
-  for (let i = 0; i < holeAmount; i++) {
-    teeBoxes = holes[i].teeBoxes
+  //for (let i = 0; i < holeAmount; i++) {
+    teeBoxes = holes[0].teeBoxes
     var teeBoxSelectHtml = ''
     teeBoxes.forEach(function (teeBox) {
-    teeBoxSelectHtml += `<option class="teeBoxOptionClass" id="teeBoxOption${teeBox.teeTypeId}" onclick="choosingTee(${teeBox.teeTypeId})">${teeBox.teeType.toUpperCase()}, ${
-    teeBox.yards
-    } yards</option>`
+    teeBoxSelectHtml += `<option class="teeBoxOptionClass" id="teeBoxOption${teeBox.teeTypeId}" onclick="choosingTee(${teeBox.teeTypeId})">${teeBox.teeType.toUpperCase()}, ${teeBox.yards} yards</option>`
     document.getElementById('tee-box-select').innerHTML = teeBoxSelectHtml;
   })}
-}
+//}
 //tee button click 
 function choosingTee(teeTypeId) {
 document.getElementById('theOptions').innerHTML = '';
 selectedTee = teeBoxes.find(t => t.teeTypeId === teeTypeId);
+
+for (let i = 0; i < holeAmount -1; i++) {
+  let theChosenTeeBox = holes[i].teeBoxes
+  for (let j = 0; j < theChosenTeeBox.length -1; j++) {
+    let chosenYards = holes[i].teeBoxes[j].yards
+    yardageArray[i + 1] = chosenYards
+    
+  }
+}
+for (let l = 1; l < yardageArray.length; l++) {
+  totalYards += yardageArray[l]
+}
+yardageArray[holeAmount] = totalYards
+choosingPar()
 render();
 }
 
-//make restart button that appears with the players after choosing a hole so they can choose if they want to
-//and then make a confirm button after the yards have been chosen
-//bringing together the three introduction buttons 
-
-//maybe if i have time actually
-function userOptions() {
-
+function choosingPar() {
+  for (let i = 0; i < holeAmount -1; i++) {
+    let theChosenTeeBox = holes[i].teeBoxes
+    for (let j = 0; j < theChosenTeeBox.length -1; j++) {
+      let chosenPar = holes[i].teeBoxes[j].par
+      parArray[i + 1] = chosenPar
+      
+    }
+  }
+  for (let l = 1; l < parArray.length; l++) {
+    totalPar += parArray[l]
+  }
+  parArray[holeAmount] = totalPar
+  choosingHandicap()
+render();
+}
+function choosingHandicap() {
+  for (let i = 0; i < holeAmount -1; i++) {
+    let theChosenTeeBox = holes[i].teeBoxes
+    for (let j = 0; j < theChosenTeeBox.length -1; j++) {
+      let chosenHandicap = holes[i].teeBoxes[j].hcp
+      handicapArray[i + 1] = chosenHandicap
+    }
+  }
+handicapArray[holeAmount] = '';
+render();
 }
 //rendering :thumb:
 function render() {
@@ -135,10 +174,34 @@ function render() {
   document.getElementById('header').innerHTML = courseTitle
   //rendering the table with everything *ugh*
   if (selectedTee) {
-    let table = '';
+    //first row
+    let tableOne = '';
     rowOne.forEach((holes) =>
     {
-      table += `<div>${holes}</div>`
+      tableOne += `<td class="tableItems">${holes}</td>`
     })
-  document.getElementById('theTable').innerHTML = table
+    tableOne += '<td class="tableItems">Out</td>'
+  document.getElementById('firstRow').innerHTML = tableOne
+  //second row
+    let tableTwo = '';
+    yardageArray.forEach((yards) =>
+    {
+      tableTwo += `<td class="tableItems">${yards}</td>`
+  })
+  document.getElementById('secondRow').innerHTML = tableTwo
+  //third row
+  let tableThree = '';
+    parArray.forEach((par) =>
+    {
+      tableThree += `<td class="tableItems">${par}</td>`
+  })
+  document.getElementById('thirdRow').innerHTML = tableThree
+  //fourth row
+  let tableFour = '';
+  handicapArray.forEach((handicap) =>
+  {
+    tableFour += `<td class="tableItems">${handicap}</td>`
+})
+document.getElementById('fourthRow').innerHTML = tableFour
+  //player made rows
 }}
