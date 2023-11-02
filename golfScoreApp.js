@@ -33,7 +33,7 @@ async function getGolfCourseDetails(golfCourseId) {
   let handicapArray = ['Handicap']
   let totalYards = 0;
   let totalPar = 0;
-
+  let playerArray = []
 //makes the selection work
   async function go() {
     courses = await getAvailableGolfCourses(); 
@@ -107,7 +107,7 @@ function playerAmountSelection(id) {
   document.getElementById(`player${id}`).className = 'chosenOptionClass'
   noClue()
 }
-//which tee button
+//rendering the holes
 function noClue() {
   holes.length = holeAmount;
   //for (let i = 0; i < holeAmount; i++) {
@@ -119,6 +119,7 @@ function noClue() {
   })}
 //}
 //tee button click 
+//rendering the tee
 function choosingTee(teeTypeId) {
 document.getElementById('theOptions').innerHTML = '';
 selectedTee = teeBoxes.find(t => t.teeTypeId === teeTypeId);
@@ -138,7 +139,7 @@ yardageArray[holeAmount] = totalYards
 choosingPar()
 render();
 }
-
+//rendering the pars
 function choosingPar() {
   for (let i = 0; i < holeAmount -1; i++) {
     let theChosenTeeBox = holes[i].teeBoxes
@@ -155,6 +156,7 @@ function choosingPar() {
   choosingHandicap()
 render();
 }
+//rendering the handicaps
 function choosingHandicap() {
   for (let i = 0; i < holeAmount -1; i++) {
     let theChosenTeeBox = holes[i].teeBoxes
@@ -164,16 +166,66 @@ function choosingHandicap() {
     }
   }
 handicapArray[holeAmount] = '';
+choosingPlayerAmount()
 render();
 }
-//rendering :thumb:
+//rendering the player amount
+function choosingPlayerAmount() {
+  if (playerAmount === count) {
+    document.getElementById('playerNameForm').innerHTML = ''
+  } else {
+  let playerName = ''
+  playerName += `<div>What is your name?</div>`
+  playerName += `<input id="playerNameId">`
+  playerName += `<button onclick="playerNameRendering()">submit</button>`
+  document.getElementById('playerNameForm').innerHTML = playerName
+  }
+}
+let count = 0;
+let currentPlayerName;
+function playerNameRendering() {
+  count += 1;
+  currentPlayerName = document.getElementById('playerNameId').value
+  playerArray.push({
+    array: {
+      name: currentPlayerName,
+      
+    },
+    id: count
+  })
+  choosingPlayerAmount()
+  render()
+  
+}
+//renderng :thumb:
 function render() {
   //rendering in the title
   let courseTitle = '';
   courseTitle += `<div>${selectedCourse.name}</div>`
   document.getElementById('header').innerHTML = courseTitle
   //rendering the table with everything *ugh*
+  //rendering in the table
   if (selectedTee) {
+    let theTableHtml = '';
+    theTableHtml += `<table id="theTable"></table>`
+    document.getElementById('tableContainer').innerHTML = theTableHtml
+    //rendering the table rows into the table
+    let createdTable = ''
+    createdTable += `<tr class="tableRows" id="firstRow"></tr>`
+    createdTable += `<tr class="tableRows" id="secondRow"></tr>`
+    createdTable += `<tr class="tableRows" id="thirdRow"></tr>`
+    createdTable += `<tr class="tableRows" id="fourthRow"></tr>`
+    if(currentPlayerName) {
+      console.log(playerArray)
+      playerArray.forEach((player) => {
+        console.log(player)
+        createdTable += `<tr class="tableRows" id='playerNumber${player}'>
+        <td class="tableItems">${player.name}</td>
+        </tr>`
+        console.log(count)
+      })
+    }
+    document.getElementById('theTable').innerHTML = createdTable
     //first row
     let tableOne = '';
     rowOne.forEach((holes) =>
@@ -204,4 +256,5 @@ function render() {
 })
 document.getElementById('fourthRow').innerHTML = tableFour
   //player made rows
-}}
+}
+}
