@@ -63,3 +63,10 @@ body {
 .tableItems {
     border: solid black 2px;
 }
+#scoreQuestionButton {
+    background-color: $myTeal;
+    padding: 10px;
+    border-radius: 15px;
+    width: 90px;
+    color: white;
+}

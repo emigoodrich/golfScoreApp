@@ -67,4 +67,12 @@ body {
 
 .tableItems {
   border: solid black 2px;
+}
+
+#scoreQuestionButton {
+  background-color: rgb(0, 64, 64);
+  padding: 10px;
+  border-radius: 15px;
+  width: 90px;
+  color: white;
 }/*# sourceMappingURL=style.css.map */

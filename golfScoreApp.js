@@ -59,10 +59,7 @@ let selectedCourse = '';
 function submitCourseSelect() {
    let x = document.getElementById('course-select').selectedIndex
    selectedCourse = courses[x]
-   if (holeAmount) {
-    //everything equals nothing??? or local storage ughhh
-   }
-   document.getElementsByClassName('form-group').innerHTML = ''
+   document.getElementById('options-container').innerHTML = ''
    goAgain();
    render();
 }
@@ -171,8 +168,10 @@ render();
 }
 //rendering the player amount
 function choosingPlayerAmount() {
+  
   if (playerAmount === count) {
     document.getElementById('playerNameForm').innerHTML = ''
+    creatingScoreQuestionButton()
   } else {
   let playerName = ''
   playerName += `<div>What is your name?</div>`
@@ -187,15 +186,68 @@ function playerNameRendering() {
   count += 1;
   currentPlayerName = document.getElementById('playerNameId').value
   playerArray.push({
-    array: {
-      name: currentPlayerName,
-      
-    },
+    array: [{name: currentPlayerName}],
     id: count
   })
+  
   choosingPlayerAmount()
   render()
-  
+  playerLooping()
+}
+let currentPlayer
+let currentPlayerArray;
+function playerLooping() {
+  currentPlayer = playerArray.find(p => p.id === count)
+  currentPlayerArray = currentPlayer.array
+  console.log(currentPlayerArray)
+  for (let i = 0; i < holeAmount - 1; i++) {
+    currentPlayerArray.push({
+      holeid: i,
+      playerId: currentPlayer.id,
+      name: ''
+    })
+  }
+  console.log(playerArray)
+  renderinPlayers(currentPlayer)
+}
+function renderinPlayers(currentPlayer) {
+  let playerRow = ''
+  currentPlayerArray.forEach((section) => {
+   playerRow += `<td class="tableItems">${section.name}</td>`
+  }) //something like this, although idk cuz this broke
+  document.getElementById(`playerNumber${currentPlayer}`).innerHTML = playerRow
+}
+function creatingScoreQuestionButton() {
+  let scoreQuestionButton = ''
+  scoreQuestionButton += `<div id='scoreQuestionButton' onclick='scoreQuestion()'>New Score</div>`
+  // scoreQuestionButton += `<div>What is the next score?</div>`
+  // scoreQuestionButton += `<input id="scoreQuestionId">`
+  // scoreQuestionButton += `<button onclick="">submit</button>`
+  document.getElementById('playerNameForm').innerHTML = scoreQuestionButton
+}//ohhhh i've got to loop through first and then i can 
+function scoreQuestion() {
+  document.getElementById('playerNameForm').innerHTML = 's'
+  let scoreQuestion = ''
+  playerArray.forEach((player) => {
+    scoreQuestion += `<div>What is ${player.array.name}'s next score?</div>`
+    scoreQuestion += `<input class="scoreInput" id="playerScoreInput${player.id}">`
+  })
+  scoreQuestion += `<button onclick="scoreRendering()">submit all</button>`
+  document.getElementById('playerNameForm').innerHTML = scoreQuestion
+  console.log(playerArray)
+}
+let currentPlayerForScore;
+let currentPlayerScore;
+function scoreRendering() {
+  // console.log(playerArray)
+  // for (let i = 0; i < playerAmount; i ++) {
+  //   playerArray[i] = currentPlayerForScore
+  //   console.log(currentPlayerForScore)
+  //   console.log(playerArray)
+  //   currentPlayerScore = document.getElementById(`playerScoreInput${currentPlayerForScore.id}`)
+  // }
+  // console.log(playerArray)
+  // console.log(currentPlayerForScore)
 }
 //renderng :thumb:
 function render() {
@@ -216,15 +268,14 @@ function render() {
     createdTable += `<tr class="tableRows" id="thirdRow"></tr>`
     createdTable += `<tr class="tableRows" id="fourthRow"></tr>`
     if(currentPlayerName) {
-      console.log(playerArray)
       playerArray.forEach((player) => {
-        console.log(player)
         createdTable += `<tr class="tableRows" id='playerNumber${player}'>
-        <td class="tableItems">${player.name}</td>
+        
         </tr>`
-        console.log(count)
       })
+      
     }
+
     document.getElementById('theTable').innerHTML = createdTable
     //first row
     let tableOne = '';
