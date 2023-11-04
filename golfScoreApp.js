@@ -186,68 +186,128 @@ function playerNameRendering() {
   count += 1;
   currentPlayerName = document.getElementById('playerNameId').value
   playerArray.push({
-    array: [{name: currentPlayerName}],
+    array: [{holeId: 0, playerId: count, name: currentPlayerName}],
     id: count
   })
   
   choosingPlayerAmount()
-  render()
   playerLooping()
 }
-let currentPlayer
+let currentPlayer;
 let currentPlayerArray;
 function playerLooping() {
   currentPlayer = playerArray.find(p => p.id === count)
   currentPlayerArray = currentPlayer.array
-  console.log(currentPlayerArray)
-  for (let i = 0; i < holeAmount - 1; i++) {
+  
+  for (let i = 1; i < holeAmount; i++) {
     currentPlayerArray.push({
-      holeid: i,
+      holeId: i,
       playerId: currentPlayer.id,
       name: ''
     })
-  }
-  console.log(playerArray)
-  renderinPlayers(currentPlayer)
+  
+ 
 }
-function renderinPlayers(currentPlayer) {
-  let playerRow = ''
-  currentPlayerArray.forEach((section) => {
-   playerRow += `<td class="tableItems">${section.name}</td>`
-  }) //something like this, although idk cuz this broke
-  document.getElementById(`playerNumber${currentPlayer}`).innerHTML = playerRow
+currentPlayerArray.push({
+  holeId: holeAmount,
+  name: ''
+})
+render()
+renderinPlayers()
 }
+
+function renderinPlayers() {
+  
+  playerArray.forEach((current) => {
+    let playerRow = ''
+    current.array.forEach((section) => {
+      playerRow += `<td class="tableItems" class="${section.playerId} id="${section.holeId}">${section.name}</td>`
+     }) //something like this, although idk cuz this broke
+    
+     document.getElementById(`playerNumber${current.id}`).innerHTML = playerRow
+    })
+ 
+}
+
 function creatingScoreQuestionButton() {
   let scoreQuestionButton = ''
-  scoreQuestionButton += `<div id='scoreQuestionButton' onclick='scoreQuestion()'>New Score</div>`
-  // scoreQuestionButton += `<div>What is the next score?</div>`
-  // scoreQuestionButton += `<input id="scoreQuestionId">`
-  // scoreQuestionButton += `<button onclick="">submit</button>`
+  scoreQuestionButton += `<div id='scoreQuestionButton' onclick='scoreQuestion()'>Add New Scores</div>`
+  //ugh this all so gross
   document.getElementById('playerNameForm').innerHTML = scoreQuestionButton
-}//ohhhh i've got to loop through first and then i can 
+}
+
 function scoreQuestion() {
-  document.getElementById('playerNameForm').innerHTML = 's'
+  document.getElementById('playerNameForm').innerHTML = ''
   let scoreQuestion = ''
   playerArray.forEach((player) => {
-    scoreQuestion += `<div>What is ${player.array.name}'s next score?</div>`
+    scoreQuestion += `<div>What is ${player.array[0].name}'s next score?</div>`
     scoreQuestion += `<input class="scoreInput" id="playerScoreInput${player.id}">`
   })
   scoreQuestion += `<button onclick="scoreRendering()">submit all</button>`
   document.getElementById('playerNameForm').innerHTML = scoreQuestion
-  console.log(playerArray)
 }
-let currentPlayerForScore;
-let currentPlayerScore;
+let scoreHoleCount = 1; // this is for moving through the holes
+
+function validateScores() {
+
+  let allScoresValid = true;
+
+  playerArray.forEach((currentPlayer) => {
+    let element = document.getElementById(`playerScoreInput${currentPlayer.id}`)
+    currentPlayer.array[scoreHoleCount].name = parseInt(element.value)
+    if (isNaN(currentPlayer.array[scoreHoleCount].name)) {
+      alert('dude make sure you only enter in numbers')
+      allScoresValid = false;
+    }
+
+  })
+  return allScoresValid;
+}
+
 function scoreRendering() {
-  // console.log(playerArray)
-  // for (let i = 0; i < playerAmount; i ++) {
-  //   playerArray[i] = currentPlayerForScore
-  //   console.log(currentPlayerForScore)
-  //   console.log(playerArray)
-  //   currentPlayerScore = document.getElementById(`playerScoreInput${currentPlayerForScore.id}`)
-  // }
-  // console.log(playerArray)
-  // console.log(currentPlayerForScore)
+
+  let validScores = validateScores();
+
+  if (!validScores) {
+    return;
+  }
+
+  playerArray.forEach((currentPlayer) => {
+    let element = document.getElementById(`playerScoreInput${currentPlayer.id}`)
+    currentPlayer.array[scoreHoleCount].name = parseInt(element.value)
+    if (isNaN(currentPlayer.array[scoreHoleCount].name)) {
+      alert('dude make sure you only enter in numbers')
+    } else {
+      totalingUp()
+      renderinPlayers()
+      
+    }
+
+  })
+ 
+  
+  if (scoreHoleCount === holeAmount -1) {
+    console.log('it worked!!!!!!!!!')
+    document.getElementById('playerNameForm').innerHTML = ''
+    let dog = ''
+    dog += `<div>Hooray! You finished!</div>`
+    document.getElementById('playerNameForm').innerHTML = dog
+  } 
+  scoreHoleCount += 1;
+  renderinPlayers()
+  scoreQuestion();
+}
+
+function totalingUp() {
+  playerArray.forEach((current) => {
+    let total = 0;
+    for (let i = 1; i < holeAmount; i++) {
+      total += current.array[i].name
+    }
+    current.array[holeAmount].name = total;
+    total = 0;
+  })
+  
 }
 //renderng :thumb:
 function render() {
@@ -269,13 +329,10 @@ function render() {
     createdTable += `<tr class="tableRows" id="fourthRow"></tr>`
     if(currentPlayerName) {
       playerArray.forEach((player) => {
-        createdTable += `<tr class="tableRows" id='playerNumber${player}'>
-        
-        </tr>`
+        createdTable += `<tr class="tableRows" id='playerNumber${player.id}'></tr>`
       })
       
     }
-
     document.getElementById('theTable').innerHTML = createdTable
     //first row
     let tableOne = '';
